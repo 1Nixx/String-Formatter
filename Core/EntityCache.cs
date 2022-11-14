@@ -6,7 +6,7 @@ namespace Core
 {
 	internal class EntityCache : IPropertyAccessCache<string>
 	{
-		private ConcurrentDictionary<string, Expression<Func<object, string>>> _cache;
+		private ConcurrentDictionary<string, Expression<Func<object, string>>> _cache = new();
 
 		public string GetCached(object target, string propOrFieldName)
 		{

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-	internal interface IValidator
+	internal interface IValidator<T>
 	{
-		bool IsValid(object value);
+		bool IsValid(T value);
 	}
 }
