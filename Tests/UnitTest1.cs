@@ -8,25 +8,23 @@ namespace Tests
 		{
 			public string FirstName { get; }
 			public string LastName { get; }
-			public int Orders { get; }
+			public int Age { get; }
 
-			public User(string firstName, string lastName, int orders)
+			public User(string firstName, string lastName, int age)
 			{
 				FirstName = firstName;
 				LastName = lastName;
-				Orders = orders;
+				Age = age;
 			}
 
 			public string GetGreeting()
 			{
-				return StringFormatter.Shared.Format(
-					"Привет, {FirstName} {LastName}!", this);
+				return StringFormatter.Shared.Format("Привет, {FirstName} {LastName}!", this);
 			}
 
 			public string GetOrderString()
 			{
-				return StringFormatter.Shared.Format(
-					"{FirstName} {LastName} заказал(а) {Orders}", this);
+				return StringFormatter.Shared.Format("{FirstName} {LastName} возраст {Age}", this);
 			}
 
 		}
@@ -53,22 +51,22 @@ namespace Tests
 		[Test]
 		public void PublicStringTest()
 		{
-			var user = new User("Петя", "Иванов", 1);
+			var user = new User("Никита", "Хрипач", 19);
 
 			var fullName = user.GetOrderString();
 
-			Assert.That(fullName, Is.EqualTo("Петя Иванов заказал(а) 1"));
+			Assert.That(fullName, Is.EqualTo("Никита Хрипач возраст 19"));
 		}
 
 
 		[Test]
 		public void PublicPropertyAccessTest()
 		{
-			var user = new User("Петя", "Иванов", 2);
+			var user = new User("Никита", "Хрипач", 22);
 
 			var result = user.GetGreeting();
 
-			Assert.That(result, Is.EqualTo("Привет, Петя Иванов!"));
+			Assert.That(result, Is.EqualTo("Привет, Никита Хрипач!"));
 		}
 
 		[Test]
