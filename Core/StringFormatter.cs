@@ -26,64 +26,65 @@ namespace Core
 			return ParceString(template, target);
 		}
 
-
 		private string ParceString(string input, object target)
 		{
+			int i = -1;
 
-			var result = new StringBuilder();
+			int leftBorder, rightBorder;
+			var stringBuilder = new StringBuilder();
 
-			bool isData = false, isComment = false;
-
-			var workData = new StringBuilder();
-
-			for (int i = 0; i < input.Length; i++)
+			while (i < input.Length)
 			{
-				if (input[i] == '{')
+				leftBorder = IndexOfAloneSymbol(input, '{', i + 1);
+				if (leftBorder == -1)
 				{
-					if (!isData)
-					{
-						isData = true;
-						workData.Clear();
-
-					}
-					else
-					{
-						isData = false;
-						isComment = true;
-						result.Append(input[i]);
-					}
+					stringBuilder.Append(input.Substring(i + 1)).Replace("{{", "{").Replace("}}", "}");
+					break;
 				}
-
-				if (input[i] == '}')
+				else
 				{
-					if (isData)
-					{
-						isData = false;
-						result.Append(_cache.GetCached(target, workData.ToString()));
-					}
+					stringBuilder.Append(input.Substring(i + 1, leftBorder - i - 1)).Replace("{{", "{").Replace("}}", "}");
+					i = leftBorder;
 
-					if (isComment)
-					{
-						isComment = false;
-						result.Append(input[i]);
-					}
+					rightBorder = IndexOfAloneSymbol(input, '}', i + 1);
+					i = rightBorder;
 
-				}
-
-				if (input[i] != '}' && input[i] != '{')
-				{
-					if (!isData)
-					{
-						result.Append(input[i]);
-					}
-
-					{
-						workData.Append(input[i]);
-					}
+					stringBuilder.Append(_cache.GetCached(target, input.Substring(leftBorder + 1, rightBorder - leftBorder - 1)));
 				}
 			}
 
-			return result.ToString();
+			return stringBuilder.ToString();
+		}
+
+		private int IndexOfAloneSymbol(string input, char symbol, int startIndex)
+		{
+			int i = startIndex;
+			int pos = -1;
+
+			while (i < input.Length)
+			{
+				i = input.IndexOf(symbol, i);
+
+				if (i == -1)
+					break;
+
+				if (i == input.Length - 1)
+				{
+					pos = i;
+					break;
+				}
+
+				if (i < input.Length - 1)
+					if (input[i + 1] != symbol)
+					{
+						pos = i;
+						break;
+					}
+
+				i += 2;
+			}
+			
+			return pos;
 		}
 	}
 }
